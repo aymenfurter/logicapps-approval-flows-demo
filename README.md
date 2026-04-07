@@ -259,6 +259,13 @@ Look at the `runAfter` configuration: `Respond` has `runAfter: {}` (runs immedia
 
 The review and feedback Logic Apps need to call back to the Container App after the user responds, but the Container App needs the Logic App trigger URLs as environment variables. Neither can be created first. The workaround is a two-phase deploy: `main.bicep` creates everything with a placeholder `callbackHost`, then `update-callback.bicep` redeploys the two Logic Apps with the real Container App FQDN.
 
+### Further reading
+
+- [Schema reference: webhooks and subscriptions](https://learn.microsoft.com/azure/logic-apps/logic-apps-workflow-actions-triggers#webhooks-and-subscriptions) -- official docs for `ApiConnectionWebhook` type, `subscribe`/`unsubscribe` lifecycle, `limit.timeout`, and `@listCallbackUrl()`
+- [HTTP webhook connector](https://learn.microsoft.com/azure/connectors/connectors-native-webhook) -- how the generic webhook connector works (same dehydrate/rehydrate pattern used by the Teams connector)
+- [Webhook action patterns for custom APIs](https://learn.microsoft.com/azure/logic-apps/logic-apps-create-api-app#action-patterns) -- how to build your own webhook endpoints that Logic Apps can subscribe to
+- [Overview of adaptive cards for Teams](https://learn.microsoft.com/power-automate/overview-adaptive-cards) -- card capabilities, `Action.Submit`, `Input.Text`, and the "post and wait" flow
+
 ## SKU notes
 
 This demo uses Consumption (multitenant). Dehydrated webhook actions cost nothing until the callback arrives. Standard (single-tenant) requires a Workflow Service Plan with fixed compute cost, but adds VNet integration and deployment slots. Standard stateless workflows do not support `ApiConnectionWebhook` -- use stateful.
